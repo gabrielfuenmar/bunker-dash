@@ -16,7 +16,10 @@ from random import shuffle
 import dash_auth
 import os
 
-VALID_USERNAME_PASSWORD_PAIRS=os.environ.get('VALID_USERNAME_PASSWORD_PAIRS', None)
+USERNAME=os.environ.get("USERNAME_DEFAULT", None)
+PWD=os.environ.get("PASSWORD_DEFAULT", None)
+
+VALID_USERNAME_PASSWORD_PAIRS={USERNAME:PWD}
 MAPBOX_TOKEN=os.environ.get('MAPBOX_TOKEN', None)
 
 ####
