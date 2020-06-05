@@ -29,14 +29,16 @@ Returns:
 Code development:
   
   1.Def functions built for every container and linked via a bigger div.html
-  2.Pariculars of every container retrieved from style.css
+  
+  2.Particulars of every container retrieved from style.css
+  
   3.Callbacks assigned to every relevant container from every input and map
   
 Credits: Gabriel Fuentes Lezcano
 
 Licence: MIT License
 
-Copyright (c) 2019 Gabriel Fuentes
+Copyright (c) 2020 Gabriel Fuentes
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
