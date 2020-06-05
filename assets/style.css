@@ -481,11 +481,15 @@ input::-ms-input-placeholder {
     width: 100% 
   }
   .five.columns{
-    width:100%
+    width:100%;
+    margin-top:100px;
   }
-
   .three.columns{
-    width: 100%
+    width: 100%;
+    margin-top:100px;
+  }
+  .four.columns{
+    margin-top:100px;
   }
   .div-ranking,.div-for-maps, .div-for-service{
     margin-top:6px
