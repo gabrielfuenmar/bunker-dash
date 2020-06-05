@@ -28,11 +28,9 @@ Returns:
         
 Code development:
   
-  1.Def functions built for every container and linked via a bigger div.html
-  
-  2.Particulars of every container retrieved from style.css
-  
-  3.Callbacks assigned to every relevant container from every input and map
+        1.Def functions built for every container and linked via a bigger div.html
+        2.Particulars of every container retrieved from style.css
+        3.Callbacks assigned to every relevant container from every input and map
   
 Credits: Gabriel Fuentes Lezcano
 
