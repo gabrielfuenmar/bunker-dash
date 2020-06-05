@@ -1,12 +1,12 @@
 # Bunker Analytics dashboard
-Dashboard with Mediterranean bukering statistics generated from AIS data
+Dashboard with Mediterranean bukering statistics generated from AIS data.
+
 Online app that generates an interactive dashboard for bunkering information for the Mediterranean Sea. 
+
 The database was generated from a bunkering recognition algorithm that uses raw AIS information.
 
-Dependencies: 
-      geopandas 0.5.0
-      numpy 1.16.4
-      meshpy 2018.2.1
+Dependencies:
+
       pandas 1.0.3
       dash 1.12.0
       numpy 1.18.4
