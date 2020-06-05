@@ -544,6 +544,9 @@ input::-ms-input-placeholder {
     width: 32%;
  
   }
+  .five.columns,.four.columns,.three.columns{
+   margin-top:6px;
+ }
   .main-box{
     display:inline;
     flex-direction: None;
