@@ -448,7 +448,7 @@ app.layout = html.Div(children=[dcc.ConfirmDialog(id='date-error',message='Wrong
                                              className="div-for-brent bg-navy")])
                                    ],className="main-box",
                                     dcc.Link(html.Button("Home",id="home_button",className="box"),
-                                                       href="www.gabrielfuenmar.org")])
+                                                       href="gabrielfuenmar.org")])
 
 
 ###############Callbacks
