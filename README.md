@@ -24,7 +24,7 @@ Parameters:
 
 Returns: 
 
-      Dashboard deployed in gabrielfuentes.org/bunker-dash via Heroku
+      Dashboard deployed in bunker-dash.gabrielfuentes.org via Heroku
         
 Code development:
   
