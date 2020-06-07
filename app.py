@@ -405,7 +405,7 @@ def header_dropdown():
                                                       port_dropdown,type_dropdown],className="box"),               
                                               html.Button("Refresh",id="update-button",className="box"),
                                               html.A(html.Button("Home",id="home_button",className="box"),
-                                                       href="gabrielfuenmar.org")]
+                                                       href="http://gabrielfuenmar.org")]
 
 
 # Initialise the app
