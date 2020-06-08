@@ -356,23 +356,23 @@ def bunker_map(port=["full"],*args):
     zoom_map=3
     
     ##Map prueba
-    map_data.update_layout({"plot_bgcolor": "rgba(0, 0, 0, 0)",
-                                "paper_bgcolor": "rgba(0, 0, 0, 0)",
-                                'hoverlabel':{'bgcolor':'rgb(223, 232, 243)'}},
-                            margin=dict(l=0,r=0,b=0,t=0),
-                            autosize=True,hovermode='closest',
-                            mapbox_style="white-bg",clickmode="event+select",
-                            mapbox=dict(bearing=0,
-                                        center=center_map,zoom=zoom_map))
-    # #Map layout
-    # map_data.update_layout({"plot_bgcolor": "rgba(0, 0, 0, 0)",
-    #                             "paper_bgcolor": "rgba(0, 0, 0, 0)",
-    #                             'hoverlabel':{'bgcolor':'rgb(223, 232, 243)'}},
-    #                         margin=dict(l=0,r=0,b=0,t=0),
-    #                         autosize=True,hovermode='closest',clickmode="event+select",
-    #                         mapbox_style='mapbox://styles/gabrielfuenmar/ckaocvlug34up1iqvowltgs5p',
-    #                         mapbox=dict(bearing=0,accesstoken=MAPBOX_TOKEN,
-    #                                     center=center_map,zoom=zoom_map))
+    #map_data.update_layout({"plot_bgcolor": "rgba(0, 0, 0, 0)",
+    #                           "paper_bgcolor": "rgba(0, 0, 0, 0)",
+     #                           'hoverlabel':{'bgcolor':'rgb(223, 232, 243)'}},
+      #                      margin=dict(l=0,r=0,b=0,t=0),
+       #                     autosize=True,hovermode='closest',
+        #                    mapbox_style="white-bg",clickmode="event+select",
+         #                   mapbox=dict(bearing=0,
+          #                              center=center_map,zoom=zoom_map))
+     #Map layout
+     map_data.update_layout({"plot_bgcolor": "rgba(0, 0, 0, 0)",
+                                 "paper_bgcolor": "rgba(0, 0, 0, 0)",
+                                 'hoverlabel':{'bgcolor':'rgb(223, 232, 243)'}},
+                             margin=dict(l=0,r=0,b=0,t=0),
+                             autosize=True,hovermode='closest',clickmode="event+select",
+                             mapbox_style='mapbox://styles/gabrielfuenmar/ckaocvlug34up1iqvowltgs5p',
+                             mapbox=dict(bearing=0,accesstoken=MAPBOX_TOKEN,
+                                         center=center_map,zoom=zoom_map))
 
 
     #DCC Graph
