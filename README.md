@@ -3,7 +3,7 @@ Dashboard with Mediterranean bukering statistics generated from AIS data.
 
 Online app that generates an interactive dashboard for bunkering information for the Mediterranean Sea from 01-01-2014 to 01-06-2019. 
 
-The database was generated from a bunkering recognition algorithm that uses raw AIS information.
+The database was generated from a [bunkering recognition algorithm](https://github.com/gabrielfuenmar/bunkering-recognition) that uses raw AIS information.
 
 Dependencies:
 
@@ -24,7 +24,7 @@ Parameters:
 
 Returns: 
 
-      Dashboard deployed in [bunker.gabrielfuentes.org](bunker.gabrielfuentes.org) via Heroku
+      Dashboard deployed in [bunker.gabrielfuentes.org](http://bunker.gabrielfuentes.org) via Heroku
         
 Code development:
   
