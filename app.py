@@ -84,7 +84,7 @@ def stats_graph(graph="service",fr="01-01-2014",to="01-06-2019",port=["full"],
     if summary.shape[0]==0:
         if graph=="service":
             modal_ex=html.Div([# modal div
-                          html.Div([html.H7("Not enough sample to build distributions. Adjust your selection.",
+                          html.Div([html.H3("Not enough sample to build distributions. Adjust your selection.",
                                             style={'textAlign': 'center',"font-size":"21px","position":"absolute","top":"20%" })],className='modal-content'),
                           html.Button('Close', id='modal-close-button',className="button-modal")
                           ],id='modal',className='modal')
@@ -157,8 +157,8 @@ def stats_graph(graph="service",fr="01-01-2014",to="01-06-2019",port=["full"],
             ##If a port was removed from selectin then inform user
             if not_valid.shape[0]!=0:
                 ##Ordered list of div for modal.
-                ports_list_div=[html.H8("{};".format(i)) for i in not_valid.bunkering_port]
-                header_mod=[html.H7('The following port(s) are not included to the graph (small sample):')]
+                ports_list_div=[html.H4("{};".format(i)) for i in not_valid.bunkering_port]
+                header_mod=[html.H3('The following port(s) are not included to the graph (small sample):')]
                 not_valid_list=header_mod+ports_list_div
                 modal_ex=html.Div([# modal div
                                html.Div(not_valid_list,className='modal-content'),
