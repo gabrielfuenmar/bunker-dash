@@ -568,7 +568,7 @@ input::-ms-input-placeholder {
     margin-left:1rem;
   }
   h4{
-    margin-bottom:1rem;
+    margin-bottom:0.5rem;
     font-size:18px;
   }
 
@@ -622,7 +622,7 @@ input::-ms-input-placeholder {
     font-size:24px;
   }
   .box-summary2{
-    width:40vh;
+    width:50vh;
   }
   .box-summary{
     justify-content: space-evenly;
