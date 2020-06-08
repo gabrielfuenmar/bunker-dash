@@ -485,6 +485,7 @@ app = dash.Dash(__name__,
                 meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}])
 
 app.title="Bunker Analytics"
+server=app.server
 
 #Authentication
 auth = dash_auth.BasicAuth(app,VALID_USERNAME_PASSWORD_PAIRS)
