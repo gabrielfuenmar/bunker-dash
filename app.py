@@ -15,17 +15,17 @@ import numpy as np
 from random import shuffle
 import dash_auth
 import os
+import math
 
-USERNAME=str(os.environ.get("USERNAME_DEFAULT", None))
-PWD=str(os.environ.get("PASSWORD_DEFAULT", None))
-
+USERNAME=os.environ.get("USERNAME_DEFAULT", None)
+PWD=os.environ.get("PASSWORD_DEFAULT", None)
 VALID_USERNAME_PASSWORD_PAIRS={USERNAME:PWD}
-MAPBOX_TOKEN=str(os.environ.get('MAPBOX_TOKEN', None))
+
+MAPBOX_TOKEN=os.environ.get('MAPBOX_TOKEN', None)
 
 ####
 valid_colors=["#CF5C60","#717ECD","#4AB471","#F3AE4E","#D96383","#4EB1CB"]
 shuffle(valid_colors)
-valid_dash=['solid', 'dot', 'dash', 'longdash', 'dashdot', 'longdashdot']
 
 ##Databases
 ####
@@ -47,13 +47,16 @@ ports_positions=pd.read_csv('data/ports_positions.csv')
 ##Waiting time generation and barge age
 df=df.assign(waiting_time=df.start_of_service-df.vessel_inside_port,
               barge_age_at_op=df.start_of_service[0].year-df.BargeBuilt)
+##False values
+df=df[df.barge_age_at_op>0]
 
 df["waiting_time"]=df.waiting_time/np.timedelta64(1,"h")
 
 barges=df.sort_values(by=["start_of_service"]).drop_duplicates(subset=["barge_imo"],keep="last").copy()
 
 ##Service time and Waiting time function
-def stats_graph(graph="service",fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],*args):  
+def stats_graph(graph="service",fr="01-01-2014",to="01-06-2019",port=["full"],
+                type_vessel=["full"],size=["full"],*args):  
     '''Generates a plotly graph to be used in dash
     Input: 
         fr; From date (datetime dd-mm-YYYY). Default 01-01-2014
@@ -67,6 +70,8 @@ def stats_graph(graph="service",fr="01-01-2014",to="01-06-2019",port=["full"],ty
     df_in=df[df.start_of_service.between(date_from,date_to)].copy()
     if "full" not in type_vessel:
         df_in=df_in[df_in.ConType.isin(type_vessel)]
+    if "full" not in size:
+        df_in=df_in[(df_in.VesselGT>size[0])&(df_in.VesselGT<=size[1])]
         
     if "full" in port:
         summary=df_in.bunkering_port.value_counts().reset_index().rename(columns={"index":"bunkering_port","bunkering_port":"count"})
@@ -101,7 +106,7 @@ def stats_graph(graph="service",fr="01-01-2014",to="01-06-2019",port=["full"],ty
                 hist_times.append(df_iter.waiting_time.tolist())          
             times_labels.append(n)
             
-        fig_service= ff.create_distplot(hist_times, times_labels, colors=valid_colors[0:summary.shape[0]],histnorm='probability density',show_rug=False, show_hist=False)
+        fig_service= ff.create_distplot(hist_times, times_labels, colors=valid_colors[0:summary.shape[0]],histnorm='kde',show_rug=False, show_hist=False)
         
         ##Dict of annotations change for value of >9
         annotations_variable={"service":dict(x=0.93,y=-0.19,showarrow=False,text="Hours",xref="paper",yref="paper"),
@@ -121,7 +126,6 @@ def stats_graph(graph="service",fr="01-01-2014",to="01-06-2019",port=["full"],ty
         ##Axes colors                          
         fig_service.update_xaxes(showline=True, zerolinewidth=1, zerolinecolor='white',gridcolor="rgba(255,255,255,0.05)")
         fig_service.update_yaxes(automargin=True,rangemode="tozero",showline=True, zerolinewidth=1, zerolinecolor='white',gridcolor="rgba(255,255,255,0.05)")     
-         
         ##Line colors and plot 
         ##Layout for 1 record
         if summary.shape[0]==1:
@@ -176,7 +180,8 @@ def stats_graph(graph="service",fr="01-01-2014",to="01-06-2019",port=["full"],ty
                    
             return [html.H2("Waiting time"),fig_service_ex]
         
-def ranking(fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],*args): 
+def ranking(fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],
+            size=["full"],*args): 
     '''Generates a ranking of ports to be used in dash
     Input: 
         fr; From date (datetime dd-mm-YYYY). Default 01-01-2014
@@ -196,6 +201,9 @@ def ranking(fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],*
         df_in=df_in[df_in.code.isin(port)]
     if "full" not in type_vessel:
         df_in=df_in[df_in.ConType.isin(type_vessel)]
+        
+    if "full" not in size:
+        df_in=df_in[(df_in.VesselGT>size[0])&(df_in.VesselGT<=size[1])]
     
     port_count=df_in.bunkering_port.value_counts().reset_index().rename(columns={"index":'bunkering_port',"bunkering_port":"ops"})
     ##Percentage
@@ -242,7 +250,8 @@ def ranking(fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],*
     
     return [html.H2("Top 5 ports"),fig_ranking_ex]
       
-def barges(fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],*args):  
+def barges(fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],
+           size=["full"],*args):  
     '''Works the age at ops density of barges
     Input: 
         fr; From date (datetime dd-mm-YYYY). Default 01-01-2014
@@ -256,13 +265,15 @@ def barges(fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],*a
     date_to=pd.to_datetime(to)
         
     df_in=df[df.start_of_service.between(date_from,date_to)].copy()
-    ##False values
-    df_in=df_in[df_in.barge_age_at_op>0]
+
     #Filters
     if "full" not in port:
         df_in=df_in[df_in.code.isin(port)]
     if "full" not in type_vessel:
         df_in=df_in[df_in.ConType.isin(type_vessel)]
+        
+    if "full" not in size:
+        df_in=df_in[(df_in.VesselGT>size[0])&(df_in.VesselGT<=size[1])]   
         
     ##Graph construction, hovertext and bin setting
     fig_barges = go.Figure(data=[go.Histogram(x=df_in.barge_age_at_op,xbins=dict(size=2),
@@ -403,17 +414,77 @@ def header_dropdown():
         
         return [html.H1("BUNKER ANALYTICS"),html.Div([date_start,date_end,
                                                       port_dropdown,type_dropdown],className="box"),               
-                                              html.Button("Refresh",id="update-button",className="box"),
-                                              html.A(html.Button("Home",id="home_button",className="box"),
-                                                       href="http://gabrielfuentes.org")]
+                                              html.Div([html.Button("Refresh",id="update-button"),
+                                              html.A(html.Button("Home",id="home-button"),
+                                                       href="http://gabrielfuentes.org")])]
 
 
+
+##Summary container. Expected in a future to be the real time prices from API
+def summary(fr="01-01-2014",to="01-06-2019",port=["full"],type_vessel=["full"],
+            size=["full"],*args):
+        '''Summary of top port
+    Input: 
+        fr; From date (datetime dd-mm-YYYY). Default 01-01-2014
+        to; To date (datetime dd-mm-YYYY)
+        port: top port code
+        type_vessel: type of vessel
+    Returns. 
+        Plotly Graph + slider'''
+        
+        ##Datetime
+        
+        date_from=pd.to_datetime(fr)
+        date_to=pd.to_datetime(to)
+        df_in=df[df.start_of_service.between(date_from,date_to)].copy()
+        
+        if "full" not in port:
+            df_in=df_in[df_in.code.isin(port)]
+            top_port=df_in.code.value_counts().idxmax()
+            df_in=df_in[df_in.code==top_port]
+            
+        else:
+            top_port=df_in.code.value_counts().idxmax()
+            df_in=df_in[df_in.code==top_port]
+        
+        if "full" not in type_vessel:
+            df_in=df_in[df_in.ConType.isin(type_vessel)]
+        
+        if "full" not in size:
+            df_in=df_in[(df_in.VesselGT>size[0])&(df_in.VesselGT<=size[1])]
+                      
+        port_name=df_in.bunkering_port.iloc[0]
+        
+        ###Summary filter
+        operations="{:,}".format(df_in.shape[0])
+        age="{:,.1f} years".format(df_in.barge_age_at_op.mean())
+        waiting="{:,.1f} hours".format(df_in[df_in.waiting_time<=df_in.waiting_time.quantile(0.95)].waiting_time.mean())
+        service="{:,.1f} hours".format(df_in[df_in.service_time<=df_in.service_time.quantile(0.95)].service_time.mean())
+                
+        return html.Div([html.Div(html.H5("{}".format(port_name))),
+                     html.Div([html.Div([html.H3("Operations"),html.H4(operations)]),
+                     html.Div([html.H3("Service Time"),html.H4(service)]),
+                     html.Div([html.H3("WaitingTime"),html.H4(waiting)]),
+                     html.Div([html.H3("Barges Age"),html.H4(age)])],className="box-summary2")]
+                    ,className="box-summary",id="summary")
+                
+                
+##At the top we put another filter, the GT slider
+##Rounded to the closest 20
+min_val=1000
+max_val=220000
+step=int((max_val-min_val)/10)
+list_of_marks=list(range(min_val,max_val,step))
+marks={i:{"label":"{:,}".format(i),'style': {'color': '#d8d8d8'}} for i in list_of_marks}
+slider=dcc.RangeSlider(id="range-slider",min=list_of_marks[0],max=list_of_marks[-1],marks=marks,
+                step=step,value=[min_val,max_val],allowCross=False)       
+
+ 
 # Initialise the app
 app = dash.Dash(__name__,
                 meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}])
-app.title="Bunker Analytics"
 
-server = app.server
+app.title="Bunker Analytics"
 
 #Authentication
 auth = dash_auth.BasicAuth(app,VALID_USERNAME_PASSWORD_PAIRS)
@@ -438,7 +509,9 @@ app.layout = html.Div(children=[dcc.ConfirmDialog(id='date-error',message='Wrong
                                 children=[
                                     html.Div(id="map-container",children=bunker_map(),##Map
                                              className='div-for-maps bg-navy'),
-                                    html.Div(id="price-container",className="div-for-prices bg-navy")
+                                    html.Div([html.Div([html.H2("Vessel size (GT)"),slider],id="slider"),
+                                              summary()],                                              
+                                             className="div-for-prices bg-navy")
                                   ],style={"margin-left":"0px","margin-right":"0px"}),
                       html.Div(id="main-stats-price",className="container four columns",
                                 children=[
@@ -448,7 +521,6 @@ app.layout = html.Div(children=[dcc.ConfirmDialog(id='date-error',message='Wrong
                                     html.Div(id="brent-container",children=brent(),#Brent Price
                                              className="div-for-brent bg-navy")])
                                    ],className="main-box")
-
 
 ###############Callbacks
 ##Modal for missing ports
@@ -489,9 +561,10 @@ def clearDropDown1(n_clicks):
               Input('ports-dropdown', 'value'),
                      Input("types-dropdown", "value"),
                      Input('date-picker-start', 'date'),
-                     Input('date-picker-end', 'date')])
+                     Input('date-picker-end', 'date'),
+                     Input('range-slider','value')])
 
-def service_update(click,ports_val,types_val,date_s,date_e):
+def service_update(click,ports_val,types_val,date_s,date_e,size):
     ##If no value is entered then keep default
     if not ports_val:
         ports_val=["full"]
@@ -501,11 +574,14 @@ def service_update(click,ports_val,types_val,date_s,date_e):
         date_s="01-01-2014"
     if not date_e:
         date_e="01-06-2019"
+    if not size:
+        size=["full"]
     ##Click trigger
     if click is not None and len(ports_val)<=5:
         return stats_graph()
     elif len(ports_val)<=5:
-        return stats_graph(port=ports_val,type_vessel=types_val,fr=date_s,to=date_e)
+        return stats_graph(port=ports_val,type_vessel=types_val,fr=date_s,
+                           to=date_e,size=size)
     else:
         return stats_graph()
     
@@ -515,9 +591,10 @@ def service_update(click,ports_val,types_val,date_s,date_e):
               Input('ports-dropdown', 'value'),
                       Input("types-dropdown", "value"),
                       Input('date-picker-start', 'date'),
-                      Input('date-picker-end', 'date')])   
+                      Input('date-picker-end', 'date'),
+                      Input('range-slider','value')])   
 
-def waiting_update(click,ports_val,types_val,date_s,date_e):
+def waiting_update(click,ports_val,types_val,date_s,date_e,size):
     ##If no value is entered then keep default
     if not ports_val:
         ports_val=["full"]
@@ -527,11 +604,14 @@ def waiting_update(click,ports_val,types_val,date_s,date_e):
         date_s="01-01-2014"
     if not date_e:
         date_e="01-06-2019"
+    if not size:
+        size=["full"]
     ##Click trigger
     if click is not None:
         return stats_graph(graph="waiting")
     elif len(ports_val)<=5:
-        return stats_graph(graph="waiting",port=ports_val,type_vessel=types_val,fr=date_s,to=date_e)
+        return stats_graph(graph="waiting",port=ports_val,type_vessel=types_val,
+                           fr=date_s,to=date_e,size=size)
     else:
         return stats_graph(graph="waiting")
 
@@ -557,9 +637,10 @@ def brent_update(click,date_s,date_e):
                Input('ports-dropdown', 'value'),
                       Input("types-dropdown", "value"),
                       Input('date-picker-start', 'date'),
-                      Input('date-picker-end', 'date')])   
+                      Input('date-picker-end', 'date'),
+                      Input('range-slider','value')])   
 
-def age_update(click,ports_val,types_val,date_s,date_e):
+def age_update(click,ports_val,types_val,date_s,date_e,size):
     if not ports_val:
         ports_val=["full"]
     if not types_val:
@@ -567,11 +648,14 @@ def age_update(click,ports_val,types_val,date_s,date_e):
     if not date_s:
         date_s="01-01-2014"
     if not date_e:
-        date_e="01-06-2019"  
+        date_e="01-06-2019"
+    if not size:
+        size=["full"]
     if click is not None:
         return barges()
     else:
-        return barges(fr=date_s,to=date_e,port=ports_val,type_vessel=types_val)
+        return barges(fr=date_s,to=date_e,port=ports_val,
+                      type_vessel=types_val,size=size)
 
 ##Ranking update
 @app.callback(Output("ranking-container","children"),
@@ -579,9 +663,10 @@ def age_update(click,ports_val,types_val,date_s,date_e):
                Input('ports-dropdown', 'value'),
                       Input("types-dropdown", "value"),
                       Input('date-picker-start', 'date'),
-                      Input('date-picker-end', 'date')])   
+                      Input('date-picker-end', 'date'),
+                      Input('range-slider','value')])   
 
-def ranking_update(click,ports_val,types_val,date_s,date_e):
+def ranking_update(click,ports_val,types_val,date_s,date_e,size):
     if not ports_val:
         ports_val=["full"]
     if not types_val:
@@ -589,12 +674,42 @@ def ranking_update(click,ports_val,types_val,date_s,date_e):
     if not date_s:
         date_s="01-01-2014"
     if not date_e:
-        date_e="01-06-2019"  
+        date_e="01-06-2019"
+    if not size:
+        size=["full"]
     if click is not None:
         return ranking()
     else:
-        return ranking(fr=date_s,to=date_e,port=ports_val,type_vessel=types_val)      
- 
+        return ranking(fr=date_s,to=date_e,port=ports_val,
+                       type_vessel=types_val,size=size)      
+
+
+##Summary update
+@app.callback(Output("summary","children"),
+              [Input('update-button',"n_clicks"),
+               Input('ports-dropdown', 'value'),
+                      Input("types-dropdown", "value"),
+                      Input('date-picker-start', 'date'),
+                      Input('date-picker-end', 'date'),
+                      Input('range-slider','value')])   
+
+def summary_update(click,ports_val,types_val,date_s,date_e,size):
+    if not ports_val:
+        ports_val=["full"]
+    if not types_val:
+        types_val=["full"]
+    if not date_s:
+        date_s="01-01-2014"
+    if not date_e:
+        date_e="01-06-2019"
+    if not size:
+        size=["full"]
+    if click is not None:
+        return summary()
+    else:
+        return summary(fr=date_s,to=date_e,port=ports_val,
+                       type_vessel=types_val,size=size)      
+     
 ##Map selection
 
 @app.callback(Output("ports-dropdown","value"),

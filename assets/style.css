@@ -60,9 +60,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0;
   font-weight: 300;
+  font-family: "Open Sans Semi Bold";
 }
 h1 {
-  font-family: "Open Sans Semi Bold";
+  
   font-size: 21px;
   letter-spacing: 1px;
   margin-bottom: 2rem;
@@ -83,8 +84,8 @@ h3 {
   letter-spacing: 1px;
   margin-bottom: 1.5rem;
   margin-top: 1.5rem;
-  color:black;
-  text-align: left;
+  color:#2a94d6;
+  text-align: center;
 }
 h4 {
   font-size: 14px;
@@ -92,15 +93,16 @@ h4 {
   letter-spacing: 1px;
   margin-top: 0.5rem;
   margin-left:0.5rem;
-  color:black;
+  color:#d8d8d8;
   text-align: center;
-  font-family: "Open Sans Semi Bold";
 }
 h5 {
   font-size: 2.2rem;
   line-height: 1.5;
   letter-spacing: 0.5px;
   margin-bottom: 0.6rem;
+  color:#d8d8d8;
+  opacity:0.7;
   margin-top: 0.6rem;
 }
 h6 {
@@ -262,7 +264,20 @@ button, .button {
 }
 
 /* Utilities –––––––––––––––––––––––––––––––––––––––––––––––––– */
-
+.rc-slider-step{
+  background-color:#2A94D6;
+}
+.rc-slider-dot-active{
+  border-color:#2A94D6;
+  background-color:#d8d8d8
+}
+.rc-slider-handle,.rc-slider-handle:focus{
+  border-color:#2A94D6;
+  background-color:#d8d8d8
+}
+.rc-slider-handle:focus{
+  box-shadow: 0 0 5px #2A94D6;
+}
 /* Misc –––––––––––––––––––––––––––––––––––––––––––––––––– */
 hr {
   margin-top: 3rem;
@@ -477,6 +492,9 @@ input::-ms-input-placeholder {
 
 /* Larger than mobile */
 @media screen and (min-width: 300px) {
+  #slider{
+    border: 1px solid rgba(170,170,170,0.3);
+  }
   .four.columns, .eight.columns ,.twelve.columns{
     width: 100% 
   }
@@ -484,16 +502,19 @@ input::-ms-input-placeholder {
     width:100%;
     margin-top:100px;
   }
+
   .three.columns{
     width: 100%;
     margin-top:100px;
   }
+
   .four.columns{
     margin-top:100px;
   }
   .div-ranking,.div-for-maps, .div-for-service{
     margin-top:6px
   }
+  
   .main-box{
     display:flex;
     flex-direction: column;
@@ -520,12 +541,52 @@ input::-ms-input-placeholder {
     flex-direction: row;
     justify-content: stretch;
   }
+  .box-summary{
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    width:100%;
+    max-height: fit-content;
+    align-items: center;
+  }
+  .box-summary2{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    width:100%;
+    max-height: fit-content;
+  }
+
+  h3{
+    font-size:11px;
+    margin-top:0px;
+    margin-bottom:0.5rem;
+  }
+  h3,h4{
+    padding-left:0;
+    margin-left:1rem;
+  }
+  h4{
+    margin-bottom:1rem;
+    font-size:18px;
+  }
+
   .dash-dropdown{
     width:23vh;
+  }
+  .rc-slider-mark-text.rc-slider-mark-text-active{
+    font-family: Open Sans Semi Bold
+  }
+  .rc-slider-mark{
+    font-size:7px;
   }
 }  
 /* For Mobile Phones and small screens ––––––––––––––––––––––––––––––––––––––––––––––––––*/
 @media screen and (min-width:609px) {
+  h2{
+    font-size:18px;
+  }
   .div-for-maps,.div-for-prices{
     margin-left:6px;
   }
@@ -536,6 +597,9 @@ input::-ms-input-placeholder {
   .four.columns, .eight.columns ,.twelve.columns{
       width: 100%;
  }
+ .five.columns,.four.columns,.three.columns{
+   margin-top:6px;
+ }
   .five.columns{
     width:67.2%;
  }
@@ -544,13 +608,25 @@ input::-ms-input-placeholder {
     width: 32%;
  
   }
-  .five.columns,.four.columns,.three.columns{
-   margin-top:6px;
- }
   .main-box{
     display:inline;
     flex-direction: None;
   } 
+  .rc-slider-mark{
+    font-size:12px;
+  }
+  h3{
+    font-size:15px;
+  }
+  h4{
+    font-size:24px;
+  }
+  .box-summary2{
+    width:40vh;
+  }
+  .box-summary{
+    justify-content: space-evenly;
+  }
 }
 
 /* For devices larger than 1100px Defautl*/
@@ -617,6 +693,15 @@ input::-ms-input-placeholder {
   }
   .one-half.column {
       width: 48%;
+  }
+  h3{
+    font-size:20px;
+  }
+  h4{
+    font-size:22px;
+  }
+  h5{
+    font-size:28px;
   }
 }
 Offsets
@@ -697,10 +782,14 @@ Offsets
   }
   button{
     width :100px;
-    margin-top: 26px;
+    margin-top: 6px;
     margin-left: -1px;
   }
   #update-button{
+    width:57px;
+    height:35px;
+  }
+  #home-button{
     width:57px;
     height:35px;
   }
