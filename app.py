@@ -348,7 +348,7 @@ def bunker_map(port=["full"],*args):
     ##Maps construction
     map_data=go.Figure(go.Scattermapbox(lat=ports_positions_in.Lat, lon=ports_positions_in.Long,
                         mode="markers",hovertext=ports_positions_in["BE PORT_NA"],selectedpoints=[],
-                        selected={'marker':{'color': '#CF5C60'}},
+                        selected={'marker':{'color': '#F3AE4E'}},
                         text=ports_positions_in.PortCode,hovertemplate='%{hovertext}<extra></extra>',
                         marker=go.scattermapbox.Marker(size=12,color=ports_positions_in.colors,opacity=None))) 
        
