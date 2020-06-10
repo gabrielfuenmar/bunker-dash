@@ -359,13 +359,13 @@ a {
   margin-top:6px;
 }
 .div-for-brent{
-  height: 28.6vh;
+  height: 29.5vh;
   width: 100%;
   border-radius: 4px;
   margin-top:6px;
 }
 .div-for-prices{
-  height: 30.8vh;
+  height: 31vh;
   width: 100%;
   border-radius: 4px;
   margin-top:6px;
@@ -733,7 +733,7 @@ Offsets
 @media (min-width:990px){
   .div-header{
     height:10vh;
-    width:100%;
+    width:99.8%;
     border-radius: 4px;
     display:flex;
     flex-direction: row;
