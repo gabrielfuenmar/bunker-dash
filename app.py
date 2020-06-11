@@ -13,17 +13,11 @@ import plotly.graph_objects as go
 from datetime import datetime as dt
 import numpy as np
 from random import shuffle
-import dash_auth
 import os
 import math
 
-USERNAME=os.environ.get("USERNAME_DEFAULT", None)
-PWD=os.environ.get("PASSWORD_DEFAULT", None)
-VALID_USERNAME_PASSWORD_PAIRS={USERNAME:PWD}
-
 MAPBOX_TOKEN=os.environ.get('MAPBOX_TOKEN', None)
 
-####
 valid_colors=["#CF5C60","#717ECD","#4AB471","#F3AE4E","#D96383","#4EB1CB"]
 shuffle(valid_colors)
 
@@ -487,9 +481,6 @@ app = dash.Dash(__name__,
 
 app.title="Bunker Analytics"
 server=app.server
-
-#Authentication
-auth = dash_auth.BasicAuth(app,VALID_USERNAME_PASSWORD_PAIRS)
 
 # Define the app
 app.layout = html.Div("Bunker Dash")
