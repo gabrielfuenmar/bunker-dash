@@ -358,7 +358,7 @@ def bunker_map(port=["full"],*args):
         #                    mapbox_style="white-bg",clickmode="event+select",
          #                   mapbox=dict(bearing=0,
           #                              center=center_map,zoom=zoom_map))
-     #Map layout
+     #Map layout 
     map_data.update_layout({"plot_bgcolor": "rgba(0, 0, 0, 0)",
                                  "paper_bgcolor": "rgba(0, 0, 0, 0)",
                                  'hoverlabel':{'bgcolor':'rgb(223, 232, 243)'}},
